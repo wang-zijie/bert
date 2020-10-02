@@ -194,7 +194,7 @@ class DataProcessor(object):
   def _read_tsv(cls, input_file, quotechar=None):
     """Reads a tab separated value file."""
     with tf.gfile.Open(input_file, "r") as f:
-      reader = csv.reader(f, delimiter="\t", quotechar=quotechar)
+      reader = csv.reader(f, delimiter="\t")
       lines = []
       for line in reader:
         lines.append(line)
@@ -260,17 +260,17 @@ class MnliProcessor(DataProcessor):
   def get_dev_examples(self, data_dir):
     """See base class."""
     return self._create_examples(
-        self._read_tsv(os.path.join(data_dir, "dev_matched.tsv")),
-        "dev_matched")
+        self._read_tsv(os.path.join(data_dir, "dev.tsv")),
+        "dev")
 
   def get_test_examples(self, data_dir):
     """See base class."""
     return self._create_examples(
-        self._read_tsv(os.path.join(data_dir, "test_matched.tsv")), "test")
+        self._read_tsv(os.path.join(data_dir, "test.tsv")), "test")
 
   def get_labels(self):
     """See base class."""
-    return ["contradiction", "entailment", "neutral"]
+    return ["entailment", "not_entailment"]
 
   def _create_examples(self, lines, set_type):
     """Creates examples for the training and dev sets."""
@@ -279,8 +279,8 @@ class MnliProcessor(DataProcessor):
       if i == 0:
         continue
       guid = "%s-%s" % (set_type, tokenization.convert_to_unicode(line[0]))
-      text_a = tokenization.convert_to_unicode(line[8])
-      text_b = tokenization.convert_to_unicode(line[9])
+      text_a = tokenization.convert_to_unicode(line[1])
+      text_b = tokenization.convert_to_unicode(line[2])
       if set_type == "test":
         label = "contradiction"
       else:
