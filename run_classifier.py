@@ -194,7 +194,7 @@ class DataProcessor(object):
   def _read_tsv(cls, input_file, quotechar=None):
     """Reads a tab separated value file."""
     with tf.gfile.Open(input_file, "r") as f:
-      reader = csv.reader(f, delimiter="\t")
+      reader = csv.reader(f, delimiter="\t",quotechar=quotechar)
       lines = []
       for line in reader:
         lines.append(line)
@@ -315,7 +315,7 @@ class MrpcProcessor(DataProcessor):
   def _create_examples(self, lines, set_type):
     """Creates examples for the training and dev sets."""
     examples = []
-    for (i, line) in enumerate(lines):
+    for (i, line) in enumerate(lines[:300000]):
       if i == 0:
         continue
       guid = "%s-%s" % (set_type, i)
